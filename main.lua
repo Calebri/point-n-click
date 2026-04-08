@@ -9,11 +9,13 @@ local debug = false
 
 local scenes = {
     Scene(Assets.GetImg("img/test/testbg1.png"),
-          {Cb(32,  16,  95,  63),
-           Cb(128, 112, 239, 191)})
+          {Cb(32,  16,  95,  63,  {trans=2}),
+           Cb(128, 112, 239, 191)}),
+    Scene(Assets.GetImg("img/test/testbg2.png"),
+          {Cb(12,  82,  65,  199, {trans=1})})
 }
 
-local sceneman = SceneGroup(scenes, 1)
+local sceneman = SceneGroup(scenes, 2)
 
 function love.load()
     love.window.setMode(Window.width * 3, Window.height * 3, {resizable = true})
