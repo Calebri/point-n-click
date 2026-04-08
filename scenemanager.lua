@@ -11,15 +11,40 @@ function SceneGroup.new(self, scenes, index)
 end
 
 function SceneGroup.draw(self)
-    self.scenes[index]:draw()
+    self.scenes[self.index]:draw()
 end
 
-function SceneGroup.mousePressed(self, x, y, button, istouch, presses)
-    x, y = Input.MousePosGlobal()
+function SceneGroup.PosInCb(x, y, cb)
+    local bx1 = cb.x1
+    local by1 = cb.y1
+    local bx2 = cb.x2
+    local by2 = cb.y2
+    return (x >= bx1 and x <= bx2 and y >= by1 and y <= by2)
+end
+
+function SceneGroup.mousemoved(self)
+    local x, y = Input.MousePosGlobal()
+    local hovering = false
+
+    for i, cb in ipairs(self.scenes[self.index].clickables) do
+        if self.PosInCb(x, y, cb) then
+            hovering = true
+            break
+        end
+    end
+
+    if hovering then
+        love.mouse.setCursor(love.mouse.getSystemCursor("hand"))
+    else
+        love.mouse.setCursor()
+    end
+end
+
+function SceneGroup.mousepressed(self)
+    local x, y = Input.MousePosGlobal()
     if self.inputActive then
-        for i, cb in ipairs(self.scenes[index].clickables) do
-            if (x > cb.x and x < cb.x + cb.w
-                and y > cb.y and y < cb.y + cb.h) then
+        for i, cb in ipairs(self.scenes[self.index].clickables) do
+            if self.PosInCb(x, y, cb) then
                 -- Clickable clicked
                 self:ExecuteClickable(cb)
             end
