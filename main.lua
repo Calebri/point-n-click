@@ -1,5 +1,7 @@
 require "engine.window"
 
+local debug = false
+
 function love.load()
     love.window.setMode(Window.width * 3, Window.height * 3, {resizable = true})
 end

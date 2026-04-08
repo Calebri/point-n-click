@@ -1,5 +1,7 @@
 {
     "Lua.diagnostics.disable": [
-        "undefined-global"
+        "undefined-global",
+        "redundant-parameter",
+        "duplicate-set-field"
     ]
 }
