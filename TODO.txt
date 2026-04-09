@@ -1,0 +1,7 @@
+- Picking up items
+    - Inventory
+    - Layered items on background
+- World states
+    - Conditional transitions
+    - Add clickable event to set world states
+- Main menu
