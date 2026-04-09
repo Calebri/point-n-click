@@ -5,3 +5,5 @@
     - Conditional transitions
     - Add clickable event to set world states
 - Main menu
+- Interact/Examine clickable event
+- Close-up clickable event
