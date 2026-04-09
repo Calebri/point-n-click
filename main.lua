@@ -9,10 +9,10 @@ local debug = false
 
 local scenes = {
     Scene(Assets.GetImg("img/test/testbg1.png"),
-          {Cb(32,  16,  95,  63,  {trans=2}),
-           Cb(128, 112, 239, 191)}),
+          {Cb(32,  16,  96,  64,  {trans=2}),
+           Cb(128, 112, 240, 192)}),
     Scene(Assets.GetImg("img/test/testbg2.png"),
-          {Cb(12,  82,  65,  199, {trans=1})})
+          {Cb(12,  82,  66,  200, {trans=1})})
 }
 
 local sceneman = SceneGroup(scenes, 2)

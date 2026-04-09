@@ -1,3 +1,11 @@
+--[[
+    Class: SceneGroup
+    Manages a group of scenes and their objects.
+
+    table scenes: Table of individual scenes to be part of the SceneGroup
+    number index: Index of the scene in scenes that is considered active
+]]
+
 Object = require "lib.classic"
 require "engine.input"
 
@@ -14,6 +22,11 @@ function SceneGroup.draw(self)
     self.scenes[self.index]:draw()
 end
 
+---Returns whether a position lies inside a Clickable.
+---@param x number X position (global)
+---@param y number Y position (global)
+---@param cb table Clickable
+---@return boolean
 function SceneGroup.PosInCb(x, y, cb)
     local bx1 = cb.x1
     local by1 = cb.y1
@@ -52,6 +65,9 @@ function SceneGroup.mousepressed(self)
     end
 end
 
+---Execute Clickable on-click behavior
+---@param self table SceneGroup
+---@param cb table Clickable
 function SceneGroup.ExecuteClickable(self, cb)
     local config = cb.config
     if config["trans"] ~= nil then
@@ -59,6 +75,9 @@ function SceneGroup.ExecuteClickable(self, cb)
     end
 end
 
+---Transition to a scene in the SceneGroup
+---@param self table SceneGroup
+---@param i number Index of scene to transition to
 function SceneGroup.Transition(self, i)
     self.index = i
 end
