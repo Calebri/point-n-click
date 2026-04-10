@@ -6,14 +6,14 @@
     boolean active: Whether the Addon should be drawn
 ]]
 
-Addon = {}
+Addon = Object:extend()
 
 function Addon.new(self, img, active)
     self.img = assert(img)
-    self.active = active or false
+    self.active = active
 end
 
 function Addon.draw(self)
-    love.draw(self.img)
+    love.graphics.draw(self.img)
 end
 return Addon
