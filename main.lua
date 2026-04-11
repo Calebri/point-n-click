@@ -23,7 +23,7 @@ function love.load()
     love.window.setMode(Window.width * 3, Window.height * 3, {resizable = true})
 end
 
-function love.update()
+function love.update(dt)
     
 end
 

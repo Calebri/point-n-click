@@ -106,7 +106,7 @@ local behaviors = {
     
     ---@param v number Index of clickable in current Scene to destroy.
     destroy = function (self, v)
-        table.remove(self:CurrentScene().clickables, v)
+        table.remove(self:CurrentScene().clickables, v) -- Change to disable clickable insead?
     end
 }
 
