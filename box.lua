@@ -3,6 +3,7 @@
 ]]
 
 require "engine.window"
+require "lib.timer"
 
 Box = Object:extend()
 
@@ -30,27 +31,33 @@ function Box.new(self)
     self.vh = 0
 
     -- Animation speed (pixel/s)
-    self.speed = 8
+    -- self.speed = 8
+
+    self.delay = 1
 
     -- Keeps track of animation state
     self.animstate = AnimState.STOP
+
+    self.timer = Timer()
 end
 
 function Box.update(self, dt)
-    -- Change logic based on animstate
-    if self.animstate == AnimState.EXPAND then
-        if self.vw >= self.w then
-            self.vw = self.w
-        else
-            self.vw = self.vw + speed
-        end
+    self.timer:update(dt)
 
-        if self.vh >= self.h then
-            self.vh = self.h
-        else
-            self.vh = self.vh + speed
-        end
-    end
+    -- Change logic based on animstate
+    -- if self.animstate == AnimState.EXPAND then
+    --     if self.vw >= self.w then
+    --         self.vw = self.w
+    --     else
+    --         self.vw = self.vw + speed
+    --     end
+
+    --     if self.vh >= self.h then
+    --         self.vh = self.h
+    --     else
+    --         self.vh = self.vh + speed
+    --     end
+    -- end
 end
 
 function Box.draw(self)
@@ -59,9 +66,20 @@ function Box.draw(self)
 end
 
 function Box.OpenAsync()
-    local box = Box()
+    local self = Box()
 
-    box.animstate = AnimState.EXPAND
+    self.animstate = AnimState.EXPAND
+
+    local target = {
+        vw = self.w,
+        vh = self.h
+    }
+
+    timer:tween(self.delay, self, target, "linear", function ()
+        self.animstate = AnimState.STOP
+    end)
+
+    return self
 
     -- Possibly we need a timer lib for this
     -- chrono.during or chrono.tween could work
