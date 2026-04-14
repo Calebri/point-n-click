@@ -7,6 +7,9 @@ Timer = require "lib.timer"
 
 Box = Object:extend()
 
+local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf")
+font:setFilter("nearest", "nearest")
+
 local AnimState = {
     STOP = 0,
     EXPAND = 1,
@@ -30,6 +33,8 @@ function Box.new(self)
     self.vw = 0
     self.vh = 0
 
+    self.text = nil
+
     -- Animation speed (pixel/s)
     -- self.speed = 8
 
@@ -50,6 +55,10 @@ function Box.draw(self)
     love.graphics.setColor(love.math.colorFromBytes(81, 172, 252))
     love.graphics.rectangle("fill", self.x - self.vw / 2, self.y - self.vh / 2, self.vw, self.vh) -- temp rectangle
     love.graphics.setColor(1, 1, 1)
+
+    if self.text then
+        love.graphics.print(self.text, font, self.x - self.vw / 2, self.y - self.vh / 2, 0, self.vw / self.w)
+    end
 end
 
 ---@param h? number
@@ -57,6 +66,7 @@ end
 ---@return table Box
 function Box.Open(h, w)
     local self = Box()
+    self.text = "Test text element"
 
     self.h = h or self.h
     self.w = w or self.w
