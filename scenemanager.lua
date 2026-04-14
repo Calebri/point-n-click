@@ -68,12 +68,15 @@ function SceneGroup.UpdateMouse(self)
     local x, y = Input.MousePosGlobal()
     local hovering = false
 
-    for i, cb in ipairs(self.scenes[self.index].clickables) do
-        if self.PosInCb(x, y, cb) then
-            hovering = true
-            break
+    if self.inputActive then
+        for i, cb in ipairs(self.scenes[self.index].clickables) do
+            if self.PosInCb(x, y, cb) then
+                hovering = true
+                break
+            end
         end
     end
+
 
     if hovering then
         love.mouse.setCursor(love.mouse.getSystemCursor("hand"))

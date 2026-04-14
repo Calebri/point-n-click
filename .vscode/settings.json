@@ -3,6 +3,7 @@
         "undefined-global",
         "redundant-parameter",
         "duplicate-set-field",
-        "undefined-doc-name"
+        "undefined-doc-name",
+        "deprecated"
     ]
 }

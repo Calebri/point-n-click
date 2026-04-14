@@ -33,7 +33,7 @@ function Box.new(self)
     -- Animation speed (pixel/s)
     -- self.speed = 8
 
-    self.delay = 1
+    self.delay = 0.5
 
     -- Keeps track of animation state
     self.animstate = AnimState.STOP
@@ -43,30 +43,23 @@ end
 
 function Box.update(self, dt)
     self.timer:update(dt)
-
-    -- Change logic based on animstate
-    -- if self.animstate == AnimState.EXPAND then
-    --     if self.vw >= self.w then
-    --         self.vw = self.w
-    --     else
-    --         self.vw = self.vw + speed
-    --     end
-
-    --     if self.vh >= self.h then
-    --         self.vh = self.h
-    --     else
-    --         self.vh = self.vh + speed
-    --     end
-    -- end
 end
 
 function Box.draw(self)
     -- Draw based on visual position
+    love.graphics.setColor(love.math.colorFromBytes(81, 172, 252))
     love.graphics.rectangle("fill", self.x - self.vw / 2, self.y - self.vh / 2, self.vw, self.vh) -- temp rectangle
+    love.graphics.setColor(1, 1, 1)
 end
 
-function Box.Open()
+---@param h? number
+---@param w? number
+---@return table Box
+function Box.Open(h, w)
     local self = Box()
+
+    self.h = h or self.h
+    self.w = w or self.w
 
     self.animstate = AnimState.EXPAND
 
@@ -80,11 +73,10 @@ function Box.Open()
     end)
 
     return self
-
-    -- Possibly we need a timer lib for this
-    -- chrono.during or chrono.tween could work
 end
 
+---@param self table
+---@param aftercallback function Function to run after animation finishes.
 function Box.Collapse(self, aftercallback)
     if self.animstate == AnimState.STOP then
         -- Collapse box
