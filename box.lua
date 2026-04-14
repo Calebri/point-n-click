@@ -7,7 +7,8 @@ Timer = require "lib.timer"
 
 Box = Object:extend()
 
-local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf")
+-- local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf", 12)
+local font = love.graphics.newFont(12, "mono")
 font:setFilter("nearest", "nearest")
 
 local AnimState = {
@@ -16,10 +17,11 @@ local AnimState = {
     COLLAPSE = 2
 }
 
-function Box.new(self)
+---@param text? string
+function Box.new(self, text)
     -- Margin from the edge of screen
-    self.marginx = 50
-    self.marginy = 50
+    self.marginx = 25
+    self.marginy = 30
 
     -- Center of box
     self.x = Window.width / 2
@@ -33,17 +35,35 @@ function Box.new(self)
     self.vw = 0
     self.vh = 0
 
-    self.text = nil
+    self.text = text
+    self.tscale = 1
 
     -- Animation speed (pixel/s)
     -- self.speed = 8
 
-    self.delay = 0.5
+    self.delay = 0.3
 
     -- Keeps track of animation state
     self.animstate = AnimState.STOP
 
     self.timer = Timer()
+
+    --Draw Content Canvas
+    self.canvas = love.graphics.newCanvas(self.w, self.h)
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.origin()
+    love.graphics.setDefaultFilter("nearest", "nearest")
+
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", 0, 0, self.w, self.h) -- temp rectangle
+    love.graphics.setColor(1, 1, 1)
+
+    if self.text then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.print(self.text, font, 0, 0, 0, self.tscale)
+    end
+
+    love.graphics.setCanvas()
 end
 
 function Box.update(self, dt)
@@ -52,24 +72,13 @@ end
 
 function Box.draw(self)
     -- Draw based on visual position
-    love.graphics.setColor(love.math.colorFromBytes(81, 172, 252))
-    love.graphics.rectangle("fill", self.x - self.vw / 2, self.y - self.vh / 2, self.vw, self.vh) -- temp rectangle
-    love.graphics.setColor(1, 1, 1)
-
-    if self.text then
-        love.graphics.print(self.text, font, self.x - self.vw / 2, self.y - self.vh / 2, 0, self.vw / self.w)
-    end
+    love.graphics.draw(self.canvas, self.x - self.vw / 2, self.y - self.vh / 2, 0, self.vw / self.w)
 end
 
----@param h? number
----@param w? number
+---@param text? string
 ---@return table Box
-function Box.Open(h, w)
-    local self = Box()
-    self.text = "Test text element"
-
-    self.h = h or self.h
-    self.w = w or self.w
+function Box.Open(text)
+    local self = Box(text)
 
     self.animstate = AnimState.EXPAND
 

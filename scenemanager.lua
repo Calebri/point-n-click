@@ -123,6 +123,15 @@ local behaviors = {
         end
     end,
 
+    ---@param text string Text content
+    opentextbox = function (self, text)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open(text)
+        end
+    end,
+
     ---@param v number Index of addon in current scene to hide.
     hide = function (self, v)
         self:CurrentScene().addons[v].active = false
