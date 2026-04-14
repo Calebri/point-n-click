@@ -3,7 +3,7 @@
 ]]
 
 require "engine.window"
-require "lib.timer"
+Timer = require "lib.timer"
 
 Box = Object:extend()
 
@@ -23,8 +23,8 @@ function Box.new(self)
     self.y = Window.height / 2
 
     -- Size
-    self.w = Window.width + 2 * self.marginx
-    self.h = Window.height + 2 * self.marginy
+    self.w = Window.width - 2 * self.marginx
+    self.h = Window.height - 2 * self.marginy
 
     -- Visual size
     self.vw = 0
@@ -65,7 +65,7 @@ function Box.draw(self)
     love.graphics.rectangle("fill", self.x - self.vw / 2, self.y - self.vh / 2, self.vw, self.vh) -- temp rectangle
 end
 
-function Box.OpenAsync()
+function Box.Open()
     local self = Box()
 
     self.animstate = AnimState.EXPAND
@@ -75,7 +75,7 @@ function Box.OpenAsync()
         vh = self.h
     }
 
-    timer:tween(self.delay, self, target, "linear", function ()
+    self.timer:tween(self.delay, self, target, "linear", function ()
         self.animstate = AnimState.STOP
     end)
 
@@ -85,8 +85,18 @@ function Box.OpenAsync()
     -- chrono.during or chrono.tween could work
 end
 
-function Box.CollapseAsync(self)
+function Box.Collapse(self, aftercallback)
+    if self.animstate == AnimState.STOP then
+        -- Collapse box
+        self.animstate = AnimState.COLLAPSE
 
+        local target = {
+            vw = 0,
+            vh = 0
+        }
+
+        self.timer:tween(self.delay, self, target, "linear", aftercallback)
+    end
 end
 
 return Box

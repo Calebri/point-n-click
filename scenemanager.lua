@@ -9,17 +9,33 @@
 Object = require "lib.classic"
 require "engine.input"
 
+require "box"
+
 SceneGroup = Object:extend()
 
 function SceneGroup.new(self, scenes, index)
     self.scenes = scenes -- Scenes is an array of Scene objects
     self.index = index or 1
 
+    self.globalFlags = {}
+
     self.inputActive = true
+
+    self.box = nil
+end
+
+function SceneGroup.update(self, dt)
+    if self.box then
+        self.box:update(dt)
+    end
 end
 
 function SceneGroup.draw(self)
     self.scenes[self.index]:draw()
+    
+    if self.box then
+        self.box:draw(dt)
+    end
 end
 
 function SceneGroup.mousemoved(self)
@@ -39,6 +55,13 @@ function SceneGroup.mousepressed(self)
     end
 
     self:UpdateMouse()
+
+    if self.box then
+        self.box:Collapse(function ()
+            self.box = nil
+            self.inputActive = true
+        end)
+    end
 end
 
 function SceneGroup.UpdateMouse(self)
@@ -87,6 +110,14 @@ local behaviors = {
     ---@param v number Index of Scene to transition to.
     trans = function (self, v)
         self.index = v
+    end,
+
+    openbox = function (self)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open()
+        end
     end,
 
     ---@param v number Index of addon in current scene to hide.

@@ -5,13 +5,14 @@ require "scenemanager"
 require "scene"
 Cb = require "clickable"
 require "addon"
+require "box"
 
 local debug = false
 
 local scenes = {
     Scene(Assets.GetImg("img/test/testbg1.png"),
             {Cb(32,  16,  96,  64, {trans=2}),
-            Cb(128, 112, 240, 192, {toggle=1})},
+            Cb(128, 112, 240, 192, {hide=1})},
             {Addon(Assets.GetImg("img/test/testbg1-addon1.png"), true)}),
     Scene(Assets.GetImg("img/test/testbg2.png"),
             {Cb(12,  82,  66, 200, {trans=1})})
@@ -24,15 +25,7 @@ function love.load()
 end
 
 function love.update(dt)
-    
-end
-
-function love.mousemoved()
-    sceneman:mousemoved()
-end
-
-function love.mousepressed()
-    sceneman:mousepressed()
+    sceneman:update(dt)
 end
 
 function love.draw()
@@ -41,4 +34,12 @@ function love.draw()
     -- love.graphics.rectangle("fill", 0, 0, Window.width, Window.height)
 
     sceneman:draw()
+end
+
+function love.mousemoved()
+    sceneman:mousemoved()
+end
+
+function love.mousepressed()
+    sceneman:mousepressed()
 end

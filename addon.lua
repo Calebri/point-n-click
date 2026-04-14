@@ -10,10 +10,12 @@ Addon = Object:extend()
 
 function Addon.new(self, img, active)
     self.img = assert(img)
-    self.active = active
+    self.active = active or true
 end
 
 function Addon.draw(self)
-    love.graphics.draw(self.img)
+    if self.active then
+        love.graphics.draw(self.img)
+    end
 end
 return Addon

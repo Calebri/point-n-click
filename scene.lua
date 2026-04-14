@@ -20,9 +20,7 @@ end
 function Scene.draw(self)
     love.graphics.draw(self.background)
     for i, addon in ipairs(self.addons) do
-        if addon.active then
-            addon:draw()
-        end
+        addon:draw()
     end
 end
 
