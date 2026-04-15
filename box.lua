@@ -5,6 +5,8 @@
 require "engine.window"
 Timer = require "lib.timer"
 
+require("engine.stringops")
+
 Box = Object:extend()
 
 -- local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf", 12)
@@ -51,7 +53,46 @@ function Box.new(self, text)
 
     -- Process Text
     if self.text then
-        self.h = font:getHeight() + 2 * self.tmargin
+        local words = StringOps.split(self.text)
+
+        local lines = {}
+        local currentLine = 1
+
+        local tspace = (self.w - 2 * self.tmargin) -- Width that is occupied by text
+
+        for i, word in ipairs(words) do -- Seperate words into lines
+            if font:getWidth(word) > tspace then
+                warn("Word is too large: " .. word)
+                goto continue -- Skip words that are too large
+            end
+
+            local temp
+            if lines[currentLine] then
+                temp = lines[currentLine] .. " " .. word
+            else
+                temp = word
+            end
+
+            if font:getWidth(temp) <= tspace then
+                lines[currentLine] = temp
+            else -- width > tspace
+                currentLine = currentLine + 1
+                lines[currentLine] = word
+            end
+
+            ::continue::
+        end
+
+        -- self.text = ""
+        -- for i, line in ipairs(lines) do
+        --     self.text = self.text .. line
+        --     if i < #lines then
+        --         self.text = self.text .. "\n"
+        --     end
+        -- end
+        self.text = table.concat(lines, "\n")
+
+        self.h = #lines * font:getHeight() + 2 * self.tmargin
     end
 
     -- Draw Content Canvas
