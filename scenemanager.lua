@@ -20,7 +20,7 @@ function SceneGroup.new(self, scenes, index)
     self.globalFlags = {}
 
     self.inputActive = true
-
+    
     self.box = nil
 end
 
@@ -45,8 +45,15 @@ end
 function SceneGroup.mousepressed(self)
     local x, y = Input.MousePosGlobal()
 
-    if self.inputActive then
-        for i, cb in ipairs(self.scenes[self.index].clickables) do
+    if self.box then -- Closes current Box
+        self.box:Collapse(function ()
+            self.box = nil
+            self.inputActive = true
+        end)
+    end
+
+    if self.inputActive then -- Execute clicked clickable(s)
+        for _, cb in ipairs(self.scenes[self.index].clickables) do
             if self.PosInCb(x, y, cb) then
                 -- Clickable clicked
                 self:ExecuteClickable(cb)
@@ -55,21 +62,16 @@ function SceneGroup.mousepressed(self)
     end
 
     self:UpdateMouse()
-
-    if self.box then
-        self.box:Collapse(function ()
-            self.box = nil
-            self.inputActive = true
-        end)
-    end
 end
 
+---Updates the cursor state depending on if it is hovering on a clickable.
+---@param self table SceneGroup
 function SceneGroup.UpdateMouse(self)
     local x, y = Input.MousePosGlobal()
     local hovering = false
 
     if self.inputActive then
-        for i, cb in ipairs(self.scenes[self.index].clickables) do
+        for _, cb in ipairs(self.scenes[self.index].clickables) do
             if self.PosInCb(x, y, cb) then
                 hovering = true
                 break
@@ -86,8 +88,8 @@ function SceneGroup.UpdateMouse(self)
 end
 
 ---Returns whether a position lies inside a Clickable.
----@param x number X position (global)
----@param y number Y position (global)
+---@param x number X position (global).
+---@param y number Y position (global).
 ---@param cb table Clickable
 ---@return boolean
 function SceneGroup.PosInCb(x, y, cb)

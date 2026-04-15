@@ -37,13 +37,12 @@ function Box.new(self, text)
     self.vw = 0
     self.vh = 0
 
+    -- Text Attributes
     self.text = text
     self.tscale = 1
     self.tmargin = 5
 
-    -- Animation speed (pixel/s)
-    -- self.speed = 8
-
+    -- Time delay to open/close a box
     self.delay = 0.3
 
     -- Keeps track of animation state
@@ -60,9 +59,9 @@ function Box.new(self, text)
 
         local tspace = (self.w - 2 * self.tmargin) -- Width that is occupied by text
 
-        for i, word in ipairs(words) do -- Seperate words into lines
+        for _, word in ipairs(words) do -- Seperate words into lines
             if font:getWidth(word) > tspace then
-                warn("Word is too large: " .. word)
+                print("Word is too large: " .. word)
                 goto continue -- Skip words that are too large
             end
 
@@ -83,13 +82,6 @@ function Box.new(self, text)
             ::continue::
         end
 
-        -- self.text = ""
-        -- for i, line in ipairs(lines) do
-        --     self.text = self.text .. line
-        --     if i < #lines then
-        --         self.text = self.text .. "\n"
-        --     end
-        -- end
         self.text = table.concat(lines, "\n")
 
         self.h = #lines * font:getHeight() + 2 * self.tmargin
@@ -98,8 +90,8 @@ function Box.new(self, text)
     -- Draw Content Canvas
     self.canvas = love.graphics.newCanvas(self.w, self.h)
     love.graphics.setCanvas(self.canvas)
-    love.graphics.origin()
     love.graphics.setDefaultFilter("nearest", "nearest")
+    love.graphics.origin()
 
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", 0, 0, self.w, self.h) -- temp rectangle
@@ -142,8 +134,8 @@ function Box.Open(text)
 end
 
 ---@param self table
----@param aftercallback function Function to run after animation finishes.
-function Box.Collapse(self, aftercallback)
+---@param closecallback function Function to run after animation finishes.
+function Box.Collapse(self, closecallback)
     if self.animstate == AnimState.STOP then
         -- Collapse box
         self.animstate = AnimState.COLLAPSE
@@ -153,7 +145,9 @@ function Box.Collapse(self, aftercallback)
             vh = 0
         }
 
-        self.timer:tween(self.delay, self, target, "linear", aftercallback)
+        self.timer:tween(self.delay, self, target, "linear", closecallback)
+    else
+        print("Box failed to collapse because it is still animating.")
     end
 end
 

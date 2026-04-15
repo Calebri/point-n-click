@@ -19,7 +19,7 @@ end
 
 function Scene.draw(self)
     love.graphics.draw(self.background)
-    for i, addon in ipairs(self.addons) do
+    for _, addon in ipairs(self.addons) do
         addon:draw()
     end
 end
