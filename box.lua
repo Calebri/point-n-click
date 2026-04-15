@@ -37,6 +37,7 @@ function Box.new(self, text)
 
     self.text = text
     self.tscale = 1
+    self.tmargin = 5
 
     -- Animation speed (pixel/s)
     -- self.speed = 8
@@ -48,7 +49,12 @@ function Box.new(self, text)
 
     self.timer = Timer()
 
-    --Draw Content Canvas
+    -- Process Text
+    if self.text then
+        self.h = font:getHeight() + 2 * self.tmargin
+    end
+
+    -- Draw Content Canvas
     self.canvas = love.graphics.newCanvas(self.w, self.h)
     love.graphics.setCanvas(self.canvas)
     love.graphics.origin()
@@ -60,7 +66,7 @@ function Box.new(self, text)
 
     if self.text then
         love.graphics.setColor(1, 1, 1)
-        love.graphics.print(self.text, font, 0, 0, 0, self.tscale)
+        love.graphics.print(self.text, font, self.tmargin, self.tmargin, 0, self.tscale)
     end
 
     love.graphics.setCanvas()
