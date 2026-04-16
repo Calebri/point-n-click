@@ -13,15 +13,87 @@ require "box"
 
 SceneGroup = Object:extend()
 
+---@type table { [string]: function() }
+local behaviors = {
+    -- self table: SceneGroup
+    -- any: Single value passed from config.
+
+    ---@param v number Index of Scene to transition to.
+    trans = function (self, v)
+        self.index = v
+    end,
+
+    ---@param t table Table of values
+    setflags = function (self, t)
+        for k, v in pairs(t) do
+            self.flags[k] = v
+        end
+    end,
+
+    ---@param k string Key of flag to toggle
+    toggleflag = function (self, k)
+        self.flags[k] = not self.flags[k]
+    end,
+
+    openbox = function (self)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open()
+        end
+    end,
+
+    ---@param text string Text content
+    opentextbox = function (self, text)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open(text)
+        end
+    end,
+
+    openinvbox = function (self)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open() -- Update when box can handle items
+        end
+    end,
+
+    ---@param v number Index of addon in current scene to hide.
+    hide = function (self, v)
+        self:CurrentScene().addons[v].active = false
+    end,
+
+    ---@param v number Index of addon in current scene to show.
+    show = function (self, v)
+        self:CurrentScene().addons[v].active = true
+    end,
+
+    ---@param v number Index of addon in current scene to toggle.
+    toggle = function (self, v)
+        self:CurrentScene().addons[v].active = not self:CurrentScene().addons[v].active
+    end,
+    
+    ---@param v number Index of clickable in current Scene to destroy.
+    destroy = function (self, v)
+        table.remove(self:CurrentScene().clickables, v) -- Change to disable clickable insead?
+    end
+}
+
+
 function SceneGroup.new(self, scenes, index)
     self.scenes = scenes -- Scenes is an array of Scene objects
     self.index = index or 1
 
-    self.globalFlags = {}
+    self.flags = {}
 
     self.inputActive = true
     
     self.box = nil
+
+    self.invCb = Cb(10, 184, 44, 222)
+    self.invImg = Assets.GetImg("img/bag/bag1.png")
 end
 
 function SceneGroup.update(self, dt)
@@ -33,6 +105,8 @@ end
 function SceneGroup.draw(self)
     self.scenes[self.index]:draw()
     
+    love.graphics.draw(self.invImg)
+
     if self.box then
         self.box:draw(dt)
     end
@@ -50,17 +124,25 @@ function SceneGroup.mousepressed(self)
             self.box = nil
             self.inputActive = true
         end)
+        goto continue
     end
 
     if self.inputActive then -- Execute clicked clickable(s)
+        if self.invCb and self.PosInCb(x, y, self.invCb) then
+            -- Open Inventory menu
+            behaviors["openinvbox"](self)
+        end
+    
         for _, cb in ipairs(self.scenes[self.index].clickables) do
             if self.PosInCb(x, y, cb) then
                 -- Clickable clicked
                 self:ExecuteClickable(cb)
+                goto continue
             end
         end
     end
 
+    ::continue::
     self:UpdateMouse()
 end
 
@@ -71,14 +153,20 @@ function SceneGroup.UpdateMouse(self)
     local hovering = false
 
     if self.inputActive then
+        if self.PosInCb(x, y, self.invCb) then
+            hovering = true
+            goto done
+        end
+
         for _, cb in ipairs(self.scenes[self.index].clickables) do
             if self.PosInCb(x, y, cb) then
                 hovering = true
-                break
+                goto done
             end
         end
     end
 
+    ::done::
 
     if hovering then
         love.mouse.setCursor(love.mouse.getSystemCursor("hand"))
@@ -106,54 +194,6 @@ end
 function SceneGroup.CurrentScene(self)
     return self.scenes[self.index]
 end
-
----@type table { [string]: function() }
-local behaviors = {
-    -- self table: SceneGroup
-    -- any: Single value passed from config.
-
-    ---@param v number Index of Scene to transition to.
-    trans = function (self, v)
-        self.index = v
-    end,
-
-    openbox = function (self)
-        self.inputActive = false
-
-        if not self.box then
-            self.box = Box.Open()
-        end
-    end,
-
-    ---@param text string Text content
-    opentextbox = function (self, text)
-        self.inputActive = false
-
-        if not self.box then
-            self.box = Box.Open(text)
-        end
-    end,
-
-    ---@param v number Index of addon in current scene to hide.
-    hide = function (self, v)
-        self:CurrentScene().addons[v].active = false
-    end,
-
-    ---@param v number Index of addon in current scene to show.
-    show = function (self, v)
-        self:CurrentScene().addons[v].active = true
-    end,
-
-    ---@param v number Index of addon in current scene to toggle.
-    toggle = function (self, v)
-        self:CurrentScene().addons[v].active = not self:CurrentScene().addons[v].active
-    end,
-    
-    ---@param v number Index of clickable in current Scene to destroy.
-    destroy = function (self, v)
-        table.remove(self:CurrentScene().clickables, v) -- Change to disable clickable insead?
-    end
-}
 
 ---Execute Clickable on-click behavior
 ---@param self table SceneGroup

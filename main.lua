@@ -7,7 +7,7 @@ Cb = require "clickable"
 require "addon"
 require "box"
 
-local debug = false
+-- local debug = false
 
 local DEFAULT_SCALE = 3
 
@@ -20,7 +20,6 @@ local scenes = {
     Scene(Assets.GetImg("img/test/testbg2.png"),
             {Cb(12,  82,  66, 200, {trans=1})})
 }
-
 local sceneman = SceneGroup(scenes, 1)
 
 function love.load()

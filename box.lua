@@ -7,6 +7,8 @@ Timer = require "lib.timer"
 
 require("engine.stringops")
 
+require("item")
+
 Box = Object:extend()
 
 -- local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf", 12)
@@ -19,8 +21,8 @@ local AnimState = {
     COLLAPSE = 2
 }
 
----@param text? string
-function Box.new(self, text)
+---@param content? table
+function Box.new(self, content)
     -- Margin from the edge of screen
     self.marginx = 25
     self.marginy = 30
@@ -37,10 +39,20 @@ function Box.new(self, text)
     self.vw = 0
     self.vh = 0
 
-    -- Text Attributes
-    self.text = text
-    self.tscale = 1
-    self.tmargin = 5
+    if content then
+        -- Text Attributes
+        if content["text"] then
+            self.text = content["text"]
+            self.tscale = 1
+            self.tmargin = 5
+        end
+
+        -- Items
+        if content["items"] then
+            self.items = content["items"]
+            self.columns = 3
+        end
+    end
 
     -- Time delay to open/close a box
     self.delay = 0.3
@@ -97,12 +109,32 @@ function Box.new(self, text)
     love.graphics.rectangle("fill", 0, 0, self.w, self.h) -- temp rectangle
     love.graphics.setColor(1, 1, 1)
 
+    -- Render Text
     if self.text then
         love.graphics.setColor(1, 1, 1)
         love.graphics.print(self.text, font, self.tmargin, self.tmargin, 0, self.tscale)
     end
 
+    -- Render Items
+    if self.items then
+        for i, item in ipairs(items) do
+            love.graphics.draw(item.img, ((i - 1) % self.columns) * self.w / self.columns, ((i - 1) / self.columns) * self.h / 5) -- oml
+        end
+    end
+
     love.graphics.setCanvas()
+
+    -- Start animation
+    self.animstate = AnimState.EXPAND
+
+    local target = {
+        vw = self.w,
+        vh = self.h
+    }
+
+    self.timer:tween(self.delay, self, target, "linear", function ()
+        self.animstate = AnimState.STOP
+    end)
 end
 
 function Box.update(self, dt)
@@ -114,21 +146,20 @@ function Box.draw(self)
     love.graphics.draw(self.canvas, self.x - self.vw / 2, self.y - self.vh / 2, 0, self.vw / self.w)
 end
 
----@param text? string
+---@param content? any
 ---@return table Box
-function Box.Open(text)
-    local self = Box(text)
+function Box.Open(content)
+    local self
 
-    self.animstate = AnimState.EXPAND
-
-    local target = {
-        vw = self.w,
-        vh = self.h
-    }
-
-    self.timer:tween(self.delay, self, target, "linear", function ()
-        self.animstate = AnimState.STOP
-    end)
+    if type(content) == "string" then
+        self = Box({text=content})
+    elseif type(content) == "table" then
+        if content[1]:is(Item) then
+            self = Box({items=content})
+        end
+    else
+        self = Box()
+    end
 
     return self
 end
