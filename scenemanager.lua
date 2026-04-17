@@ -75,6 +75,21 @@ local behaviors = {
     ---@param v number Index of addon in current scene to toggle.
     toggle = function (self, v)
         self:CurrentScene().addons[v].active = not self:CurrentScene().addons[v].active
+    end,
+
+    ---@param item table Item to add to inventory.
+    additem = function (self, item)
+        table.insert(self.items, item)
+    end,
+
+    ---@param id string ID of item to remove from inventory. Will remove all instances if there are multiple.
+    remitem = function (self, id)
+        for i = #self.items, 1, -1 do
+            local item = self.items[i]
+            if item.id == id then
+                table.remove(self.items, i)
+            end
+        end
     end
 }
 
