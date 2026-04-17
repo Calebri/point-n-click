@@ -8,8 +8,10 @@
 
 Object = require "lib.classic"
 require "engine.input"
+require "engine.assets"
 
 require "box"
+require "item"
 
 SceneGroup = Object:extend()
 
@@ -56,7 +58,7 @@ local behaviors = {
         self.inputActive = false
 
         if not self.box then
-            self.box = Box.Open() -- Update when box can handle items
+            self.box = Box.Open(self.items) -- Update when box can handle items
         end
     end,
 
@@ -73,11 +75,6 @@ local behaviors = {
     ---@param v number Index of addon in current scene to toggle.
     toggle = function (self, v)
         self:CurrentScene().addons[v].active = not self:CurrentScene().addons[v].active
-    end,
-    
-    ---@param v number Index of clickable in current Scene to destroy.
-    destroy = function (self, v)
-        table.remove(self:CurrentScene().clickables, v) -- Change to disable clickable insead?
     end
 }
 
@@ -94,6 +91,12 @@ function SceneGroup.new(self, scenes, index)
 
     self.invCb = Cb(10, 184, 44, 222)
     self.invImg = Assets.GetImg("img/bag/bag1.png")
+    self.items = {
+        Item("One", Assets.GetImg("img/item/testitem1.png")),
+        Item("Two", Assets.GetImg("img/item/testitem2.png")),
+        Item("Three", Assets.GetImg("img/item/testitem3.png")),
+        Item("FOur", Assets.GetImg("img/item/testitem4.png"))
+    }
 end
 
 function SceneGroup.update(self, dt)

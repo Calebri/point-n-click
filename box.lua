@@ -117,8 +117,10 @@ function Box.new(self, content)
 
     -- Render Items
     if self.items then
-        for i, item in ipairs(items) do
-            love.graphics.draw(item.img, ((i - 1) % self.columns) * self.w / self.columns, ((i - 1) / self.columns) * self.h / 5) -- oml
+        for i, item in ipairs(self.items) do
+            love.graphics.draw(item.img, -- Worst draw call in the whole game
+                                ((i - 1) % self.columns) * (self.w / self.columns) + (self.w  / self.columns / 2) - (item.img:getWidth() / 2), -- X
+                                (math.floor((i - 1) / self.columns) + 0.5) * self.h / 5) -- Y
         end
     end
 
@@ -146,7 +148,7 @@ function Box.draw(self)
     love.graphics.draw(self.canvas, self.x - self.vw / 2, self.y - self.vh / 2, 0, self.vw / self.w)
 end
 
----@param content? any
+---@param content? string|table
 ---@return table Box
 function Box.Open(content)
     local self
