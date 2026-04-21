@@ -90,6 +90,31 @@ local behaviors = {
                 table.remove(self.items, i)
             end
         end
+    end,
+
+    ---Executes behaviors conditionally. _ at the start of a flagName indicates to execute only if the flag is false.
+    ---@param t table {flagName={behaviorToExecute}}
+    switch = function (self, t)
+        for key, value in pairs(t) do -- key is the name of the flag to check, value is the behavior to execute
+            local inverse = false
+
+            -- print("Testing key: " .. tostring(key))
+
+            if key:sub(1, 1) == "_" then -- Check for inverse indicator
+                inverse = true
+                key = key:sub(2)
+            end
+
+            local flag = false
+
+            if self.flags[key] then
+                flag = self.flags[key]
+            end
+
+            if flag ~= inverse then -- XOR gate
+                self:ExecuteClickable(value)
+            end
+        end
     end
 }
 
@@ -154,7 +179,7 @@ function SceneGroup.mousepressed(self)
         for _, cb in ipairs(self.scenes[self.index].clickables) do
             if self.PosInCb(x, y, cb) then
                 -- Clickable clicked
-                self:ExecuteClickable(cb)
+                self:ExecuteClickable(cb.config)
                 goto continue
             end
         end
@@ -215,9 +240,9 @@ end
 
 ---Execute Clickable on-click behavior
 ---@param self table SceneGroup
----@param cb table Clickable
-function SceneGroup.ExecuteClickable(self, cb)
-    local config = cb.config
+---@param config table
+function SceneGroup.ExecuteClickable(self, config)
+    -- local config = cb.config
 
     for key, behavior in pairs(behaviors) do
         if config[key] ~= nil then
