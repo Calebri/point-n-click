@@ -77,6 +77,16 @@ local behaviors = {
         self:CurrentScene().addons[v].active = not self:CurrentScene().addons[v].active
     end,
 
+    ---@param i number
+    enablecb = function (self, i)
+        self:CurrentScene().clickables[i].active = true
+    end,
+
+    ---@param i number
+    disablecb = function (self, i)
+        self:CurrentScene().clickables[i].active = true
+    end,
+
     ---@param item table Item to add to inventory.
     additem = function (self, item)
         table.insert(self.items, item)
@@ -118,7 +128,9 @@ local behaviors = {
     end
 }
 
-
+---@param self table
+---@param scenes table[]
+---@param index? number
 function SceneGroup.new(self, scenes, index)
     self.scenes = scenes -- Scenes is an array of Scene objects
     self.index = index or 1
@@ -177,7 +189,7 @@ function SceneGroup.mousepressed(self)
         end
     
         for _, cb in ipairs(self.scenes[self.index].clickables) do
-            if self.PosInCb(x, y, cb) then
+            if cb.active and self.PosInCb(x, y, cb) then
                 -- Clickable clicked
                 self:ExecuteClickable(cb.config)
                 goto continue
@@ -196,13 +208,13 @@ function SceneGroup.UpdateMouse(self)
     local hovering = false
 
     if self.inputActive then
-        if self.PosInCb(x, y, self.invCb) then
+        if self.invCb.active and self.PosInCb(x, y, self.invCb) then
             hovering = true
             goto done
         end
 
         for _, cb in ipairs(self.scenes[self.index].clickables) do
-            if self.PosInCb(x, y, cb) then
+            if cb.active and self.PosInCb(x, y, cb) then
                 hovering = true
                 goto done
             end

@@ -11,6 +11,10 @@ Object = require "lib.classic"
 
 Scene = Object:extend()
 
+---@param self table
+---@param background? Image
+---@param clickables? table[]
+---@param addons? table[]
 function Scene.new(self, background, clickables, addons)
     self.background = background or love.graphics.newImage()
     self.clickables = clickables or {}
