@@ -159,6 +159,12 @@ end
 
 function SceneGroup.draw(self)
     self.scenes[self.index]:draw()
+
+    for _, cb in pairs(self:CurrentScene().clickables) do
+        if cb.flags then
+            cb.active = self:FlagEval(cb.flags)
+        end
+    end
     
     love.graphics.draw(self.invImg)
 
@@ -261,6 +267,27 @@ function SceneGroup.ExecuteClickable(self, config)
             behavior(self, config[key])
         end
     end
+end
+
+---Returns true if all the flags evaulate to be true
+---@param self table
+---@param t string[] Array of flags
+---@return boolean
+function SceneGroup.FlagEval(self, t)
+    for _, v in pairs(t) do
+        local inverse = false
+
+        if v:sub(1,1) == "_" then
+            inverse = true
+            v = v:sub(2)
+        end
+
+        if (not self.flags[v] or self.flags[v] == false) ~= inverse then -- ~= as XOR
+            return false
+        end
+    end
+
+    return true
 end
 
 return SceneGroup

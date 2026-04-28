@@ -18,7 +18,8 @@ Clickable = Object:extend()
 ---@param y2? number
 ---@param config? table<string,any> Key value pairs of behavior keys and arguments
 ---@param active? boolean
-function Clickable.new(self, x1, y1, x2, y2, config, active)
+---@param flags? table
+function Clickable.new(self, x1, y1, x2, y2, config, active, flags)
     self.x1 = x1 or 0
     self.y1 = y1 or 0
     self.x2 = x2 or 0
@@ -26,10 +27,14 @@ function Clickable.new(self, x1, y1, x2, y2, config, active)
 
     self.config = config or {}
 
-    if active ~= nil then
-        self.active = active
+    if flags then
+        self.flags = flags
     else
-        self.active = true
+        if active ~= nil then
+            self.active = active
+        else
+            self.active = true
+        end
     end
 end
 

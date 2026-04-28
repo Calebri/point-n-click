@@ -19,8 +19,8 @@ local testSwitch = {
 local scenes = {
     Scene(Assets.GetImg("img/test/testbg1.png"),
             {Cb( 32,  16,  96,  64, {trans=2}),
-             Cb(128, 112, 240, 192, {opentextbox="Test text content. 123456789"}, false),
-             Cb(166,  30, 226,  74, {enablecb=2})},
+             Cb(128, 112, 240, 192, {opentextbox="Test text content. 123456789"}, true, {"testFlag"}),
+             Cb(166,  30, 226,  74, {toggleflag="testFlag"})},
             {Addon(Assets.GetImg("img/test/testbg1-addon1.png"), true)}),
     Scene(Assets.GetImg("img/test/testbg2.png"),
             {Cb(12,  82,  66, 200, {trans=1})})
