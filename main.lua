@@ -30,11 +30,12 @@ if debug then
     }
 else -- \/ MAIN SCENES LIST \/
     scenes = {}
-    scenes[1] = Scene(Assets.GetImg("img/scenes/lobby.png"),
+    scenes[1] = Scene(Assets.GetImg("img/scenes/lobby.png"), -- Lobby
                         {Cb(270, 158, 381, 264, {trans=2})})
-    scenes[2] = Scene(Assets.GetImg("img/scenes/checkin.png"),
+    scenes[2] = Scene(Assets.GetImg("img/scenes/checkin.png"), -- Check-in
                         {Cb(250, 370, 400, 480, {trans=1})},
                         {Addon(Assets.GetImg("img/scenes/checkin_key.png", true))})
+    scenes[3] = Scene(Assets.GetImg("img/scenes/hallway.png")) -- Hallway
 end
 
 local sceneman = SceneGroup(scenes, 1)
