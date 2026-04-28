@@ -1,7 +1,7 @@
 Window = {}
 
-Window.width = 256 --1920
-Window.height = 224 --1080
+Window.width = 650 --1920
+Window.height = 490 --1080
 
 Window.ratio = Window.width / Window.height
 
