@@ -6,6 +6,7 @@ require "scene"
 Cb = require "clickable"
 require "addon"
 require "box"
+require "shader"
 
 local debug = false
 
@@ -80,7 +81,16 @@ end
 function love.draw()
     Window:draw()
 
+    -- local newCanvas = love.graphics.newCanvas(Window.width, Window.height)
+    -- love.graphics.setCanvas(newCanvas)
+    -- love.graphics.setShader()
+
+    love.graphics.setShader(Shader.pixelBlur)
+
     sceneman:draw()
+
+    -- love.graphics.setCanvas()
+    -- love.graphics.draw(newCanvas)
 end
 
 function love.mousemoved()
