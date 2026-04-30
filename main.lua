@@ -33,13 +33,14 @@ else -- \/ MAIN SCENES LIST \/
 
     scenes[1] = Scene(Assets.GetImg("img/scenes/lobby.png"), -- Lobby
                         {Cb(270, 158, 381, 264, {trans=2}), -- Check-In Box
-                         Cb(160,  44, 489, 250), -- Area Behind
-                         Cb( 75, 239, 160, 331), -- Lamp 1
-                         Cb(489, 239, 573, 331), -- Lamp 2
                         })
     
     scenes[2] = Scene(Assets.GetImg("img/scenes/checkin.png"), -- Check-In
-                        {Cb(250, 370, 400, 480, {trans=1}) -- Arrow Button
+                        {Cb(250, 370, 400, 480, {trans=1}), -- Arrow Button
+                         Cb(160,  44, 489, 250), -- Area Behind
+                         Cb( 75, 239, 160, 331), -- Lamp 1
+                         Cb(489, 239, 573, 331), -- Lamp 2
+                         Cb(343, 309, 392, 330), -- Key
                         },
                         {Addon(Assets.GetImg("img/scenes/checkin_key.png", true))}) -- Key
     
