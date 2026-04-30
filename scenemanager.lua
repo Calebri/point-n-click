@@ -7,11 +7,14 @@
 ]]
 
 Object = require "lib.classic"
+Timer = require "lib.timer"
+
 require "engine.input"
 require "engine.assets"
 
 require "box"
 require "item"
+require "shader"
 
 SceneGroup = Object:extend()
 
@@ -22,6 +25,31 @@ local behaviors = {
 
     ---@param v number Index of Scene to transition to.
     trans = function (self, v)
+        local function UpdateShader()
+            Shader.pixelBlur:send("transitionFactor", self.transition)
+        end
+
+        self.inputActive = false -- Take away input
+        self.transition = 0
+        UpdateShader()
+        self.timer:every(1/30, function () -- Transition Into Blur
+            self.transition = self.transition + 1/30
+            UpdateShader()
+        end, 10, function ()
+            self.index = v
+            self.timer:every(1/30, function () -- Transition Out Of Blur
+                self.transition = self.transition - 1/30
+                UpdateShader()
+            end, 10, function ()
+                self.transition = 0
+                UpdateShader()
+                self.inputActive = true -- Give back input
+            end)
+        end)
+    end,
+
+    ---@param v number Index of Scene to transition to.
+    transInstant = function (self, v)
         self.index = v
     end,
 
@@ -149,9 +177,14 @@ function SceneGroup.new(self, scenes, index)
         Item("Three", Assets.GetImg("img/item/testitem3.png")),
         Item("FOur", Assets.GetImg("img/item/testitem4.png"))
     }
+
+    self.timer = Timer()
+    self.transition = 0
 end
 
 function SceneGroup.update(self, dt)
+    self.timer:update(dt)
+
     if self.box then
         self.box:update(dt)
     end

@@ -72,6 +72,8 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
 
     love.window.setMode(Window.width * DEFAULT_SCALE, Window.height * DEFAULT_SCALE, {resizable = true})
+
+    love.graphics.setShader(Shader.pixelBlur)
 end
 
 function love.update(dt)
@@ -81,16 +83,7 @@ end
 function love.draw()
     Window:draw()
 
-    -- local newCanvas = love.graphics.newCanvas(Window.width, Window.height)
-    -- love.graphics.setCanvas(newCanvas)
-    -- love.graphics.setShader()
-
-    love.graphics.setShader(Shader.pixelBlur)
-
     sceneman:draw()
-
-    -- love.graphics.setCanvas()
-    -- love.graphics.draw(newCanvas)
 end
 
 function love.mousemoved()
