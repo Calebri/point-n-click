@@ -100,6 +100,8 @@ function Box.new(self, content)
     end
 
     -- Draw Content Canvas
+    local defaultCanvas = love.graphics.getCanvas()
+
     self.canvas = love.graphics.newCanvas(self.w, self.h)
     love.graphics.setCanvas(self.canvas)
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -124,7 +126,7 @@ function Box.new(self, content)
         end
     end
 
-    love.graphics.setCanvas()
+    love.graphics.setCanvas(defaultCanvas)
 
     -- Start animation
     self.animstate = AnimState.EXPAND
