@@ -12,7 +12,7 @@ require("item")
 Box = Object:extend()
 
 -- local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf", 12)
-local font = love.graphics.newFont(12, "mono")
+local font = love.graphics.newFont(10, "mono")
 font:setFilter("nearest", "nearest")
 
 local AnimState = {
@@ -24,8 +24,8 @@ local AnimState = {
 ---@param content? table
 function Box.new(self, content)
     -- Margin from the edge of screen
-    self.marginx = 25
-    self.marginy = 30
+    self.marginx = Window.width / 10 -- 25
+    self.marginy = Window.height / 8 --30
 
     -- Center of box
     self.x = Window.width / 2
@@ -43,7 +43,7 @@ function Box.new(self, content)
         -- Text Attributes
         if content["text"] then
             self.text = content["text"]
-            self.tscale = 1
+            self.tscale = 3
             self.tmargin = 5
         end
 
@@ -72,7 +72,7 @@ function Box.new(self, content)
         local tspace = (self.w - 2 * self.tmargin) -- Width that is occupied by text
 
         for _, word in ipairs(words) do -- Seperate words into lines
-            if font:getWidth(word) > tspace then
+            if font:getWidth(word) * self.tscale > tspace then
                 print("Word is too large: " .. word)
                 goto continue -- Skip words that are too large
             end
@@ -84,7 +84,7 @@ function Box.new(self, content)
                 temp = word
             end
 
-            if font:getWidth(temp) <= tspace then
+            if font:getWidth(temp) * self.tscale <= tspace then
                 lines[currentLine] = temp
             else -- width > tspace
                 currentLine = currentLine + 1
@@ -96,7 +96,7 @@ function Box.new(self, content)
 
         self.text = table.concat(lines, "\n")
 
-        self.h = #lines * font:getHeight() + 2 * self.tmargin
+        self.h = (#lines * font:getHeight() * self.tscale) + (2 * self.tmargin)
     end
 
     -- Draw Content Canvas
