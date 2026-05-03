@@ -197,6 +197,12 @@ function SceneGroup.update(self, dt)
 end
 
 function SceneGroup.draw(self)
+    for _, addon in ipairs(self:CurrentScene().addons) do -- Evaluate Addon flags
+        if addon.flags then
+            addon.active = self:FlagEval(addon.flags)
+        end
+    end
+
     self.scenes[self.index]:draw()
     
     love.graphics.draw(self.invImg)

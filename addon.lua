@@ -8,9 +8,25 @@
 
 Addon = Object:extend()
 
-function Addon.new(self, img, active)
+---comment
+---@param self table
+---@param img Image
+---@param activeCondition? table
+function Addon.new(self, img, activeCondition)
     self.img = assert(img)
-    self.active = active or true
+
+    if activeCondition then
+        if activeCondition["active"] then
+            self.active = activeCondition["active"]
+        end
+
+        if activeCondition["flags"] then
+            self.active = false
+            self.flags = activeCondition["flags"]
+        end
+    else
+        self.active = true
+    end
 end
 
 function Addon.draw(self)

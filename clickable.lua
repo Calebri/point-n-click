@@ -27,13 +27,13 @@ function Clickable.new(self, x1, y1, x2, y2, config, activeCondition)
     self.config = config or {}
 
     if activeCondition then
-        if activeCondition["flags"] then
-            self.flags = activeCondition["flags"]
-            self.active = false
-        end
-
         if activeCondition["active"] ~= nil then
             self.active = activeCondition["active"]
+        end
+
+        if activeCondition["flags"] then
+            self.active = false
+            self.flags = activeCondition["flags"]
         end
     else
         self.active = true

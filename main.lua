@@ -25,7 +25,7 @@ if debug then
                 {Cb( 32,  16,  96,  64, {trans=2}),
                 Cb(128, 112, 240, 192, {opentextbox="Test text content. 123456789"}, true, {"testFlag"}),
                 Cb(166,  30, 226,  74, {toggleflag="testFlag"})},
-                {Addon(Assets.GetImg("img/test/testbg1-addon1.png"), true)}),
+                {Addon(Assets.GetImg("img/test/testbg1-addon1.png"))}),
         Scene(Assets.GetImg("img/test/testbg2.png"),
                 {Cb(12,  82,  66, 200, {trans=1})})
     }
@@ -42,9 +42,9 @@ else -- \/ MAIN SCENES LIST \/
                          Cb(160,  44, 489, 250), -- Area Behind
                          Cb( 75, 239, 160, 331), -- Lamp 1
                          Cb(489, 239, 573, 331), -- Lamp 2
-                         Cb(343, 309, 392, 330, {setflags={keyCollected=true}}, {flags={"_keyCollected"}}), -- Key
+                         Cb(343, 309, 392, 330, {setflags={keyCollected=true}, opentextbox="You picked up the key."}, {flags={"_keyCollected"}}), -- Key
                         },
-                        {Addon(Assets.GetImg("img/scenes/checkin_key.png", true))}) -- Key
+                        {Addon(Assets.GetImg("img/scenes/checkin_key.png"), {flags={"_keyCollected"}})}) -- Key
     
     scenes[3] = Scene(Assets.GetImg("img/scenes/hallway.png"), -- Hallway
                         {Cb( 79,  73, 160, 490), -- Door L1
