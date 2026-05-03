@@ -159,11 +159,11 @@ local behaviors = {
 ---@param self table
 ---@param scenes table[]
 ---@param index? number
-function SceneGroup.new(self, scenes, index)
+function SceneGroup.new(self, scenes, index, initialFlags)
     self.scenes = scenes -- Scenes is an array of Scene objects
     self.index = index or 1
 
-    self.flags = {}
+    self.flags = initialFlags or {}
 
     self.inputActive = true
     
@@ -188,25 +188,23 @@ function SceneGroup.update(self, dt)
     if self.box then
         self.box:update(dt)
     end
-end
 
-function SceneGroup.draw(self)
-    self.scenes[self.index]:draw()
-
-    for _, cb in pairs(self:CurrentScene().clickables) do
+    for _, cb in pairs(self:CurrentScene().clickables) do -- Evaluate CB flags
         if cb.flags then
             cb.active = self:FlagEval(cb.flags)
         end
     end
+end
+
+function SceneGroup.draw(self)
+    self.scenes[self.index]:draw()
     
     love.graphics.draw(self.invImg)
 
     if self.box then
         self.box:draw(dt)
     end
-end
 
-function SceneGroup.mousemoved(self)
     self:UpdateMouse()
 end
 
@@ -237,7 +235,6 @@ function SceneGroup.mousepressed(self)
     end
 
     ::continue::
-    self:UpdateMouse()
 end
 
 ---Updates the cursor state depending on if it is hovering on a clickable.

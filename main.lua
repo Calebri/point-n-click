@@ -34,6 +34,7 @@ else -- \/ MAIN SCENES LIST \/
 
     scenes[1] = Scene(Assets.GetImg("img/scenes/lobby.png"), -- Lobby
                         {Cb(270, 158, 381, 264, {trans=2}), -- Check-In Box
+                         Cb( 40,   0, 611,  80, {trans=3}) -- Placeholder Top Doors CB
                         })
     
     scenes[2] = Scene(Assets.GetImg("img/scenes/checkin.png"), -- Check-In
@@ -41,7 +42,7 @@ else -- \/ MAIN SCENES LIST \/
                          Cb(160,  44, 489, 250), -- Area Behind
                          Cb( 75, 239, 160, 331), -- Lamp 1
                          Cb(489, 239, 573, 331), -- Lamp 2
-                         Cb(343, 309, 392, 330), -- Key
+                         Cb(343, 309, 392, 330, {setflags={keyCollected=true}}, {flags={"_keyCollected"}}), -- Key
                         },
                         {Addon(Assets.GetImg("img/scenes/checkin_key.png", true))}) -- Key
     
@@ -66,7 +67,11 @@ else -- \/ MAIN SCENES LIST \/
 
 end
 
-local sceneman = SceneGroup(scenes, 1)
+local flags = {
+    keyCollected = false
+}
+
+local sceneman = SceneGroup(scenes, 1, flags)
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -84,10 +89,6 @@ function love.draw()
     Window:draw()
 
     sceneman:draw()
-end
-
-function love.mousemoved()
-    sceneman:mousemoved()
 end
 
 function love.mousepressed()
