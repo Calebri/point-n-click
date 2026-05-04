@@ -34,23 +34,34 @@ local behaviors = {
     ---Transition from the current scene to scene i.
     ---@param i number Index of Scene to transition to.
     trans = function (self, i)
+        ---Transition update frequency
+        local dt = 1/30
+
+        ---Time it takes to transition in or out (not both)
+        local transTime = 1/3
+
+        ---Calculated amount of transition frames in or out (not both)
+        local reps = transTime / dt
+
+        ---Transition value to be passed to the shader
+        local transition = 0
+
         local function UpdateShader()
-            Shader.pixelBlur:send("transitionFactor", self.transition)
+            Shader.pixelBlur:send("transitionFactor", transition)
         end
 
         self.inputActive = false -- Take away input
-        self.transition = 0
         UpdateShader()
-        self.timer:every(1/30, function () -- Transition Into Blur
-            self.transition = self.transition + 1/30
+        self.timer:every(dt, function () -- Transition Into Blur
+            transition = transition + 1 / reps
             UpdateShader()
-        end, 10, function ()
-            self.index = i
-            self.timer:every(1/30, function () -- Transition Out Of Blur
-                self.transition = self.transition - 1/30
+        end, reps, function ()
+            self.index = i -- Switch scene
+            self.timer:every(dt, function () -- Transition Out Of Blur
+                transition = transition - 1 / reps
                 UpdateShader()
-            end, 10, function ()
-                self.transition = 0
+            end, reps, function ()
+                transition = 0
                 UpdateShader()
                 self.inputActive = true -- Give back input
             end)
@@ -201,7 +212,6 @@ function SceneGroup.new(self, scenes, index, initialFlags)
     }
 
     self.timer = Timer()
-    self.transition = 0
 end
 
 function SceneGroup.update(self, dt)

@@ -8,7 +8,7 @@ Shader.pixelBlur = love.graphics.newShader([[
         // Based on https://www.shadertoy.com/view/MtdXDM
 
         number minPixelSize = 1;
-        number maxPixelSize = 100;
+        number maxPixelSize = 30;
 
         number pixelSize = mix(minPixelSize, maxPixelSize, transitionFactor);
 
