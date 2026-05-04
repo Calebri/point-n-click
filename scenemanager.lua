@@ -2,8 +2,15 @@
     Class: SceneGroup
     Manages a group of scenes and their objects.
 
-    table scenes: Table of individual scenes to be part of the SceneGroup
-    number index: Index of the scene in scenes that is considered active
+    Scene[] scenes: Array of individual scenes to be part of the SceneGroup.
+    number index: Index of the scene in scenes that is considered active.
+    table flags: Table of set flag variables. Flags can be any type.
+    boolean inputActive: Whether input is enabled in the SceneGroup.
+    Box box?: Current Box in the SceneGroup.
+    Clickable invCb: Clickable for the inventory button.
+    Image invImg: Image for the inventory button.
+    Item[] items: Items in the inventory.
+    Timer timer: Timer object for the SceneGroup. Used primarily for transitions.
 ]]
 
 Object = require "lib.classic"
@@ -18,13 +25,15 @@ require "shader"
 
 SceneGroup = Object:extend()
 
----@type table { [string]: function() }
+---Dictionary of behavior functions primarily for use by clickables.
+---@type { [string]: function }
 local behaviors = {
     -- self table: SceneGroup
     -- any: Single value passed from config.
 
-    ---@param v number Index of Scene to transition to.
-    trans = function (self, v)
+    ---Transition from the current scene to scene i.
+    ---@param i number Index of Scene to transition to.
+    trans = function (self, i)
         local function UpdateShader()
             Shader.pixelBlur:send("transitionFactor", self.transition)
         end
@@ -36,7 +45,7 @@ local behaviors = {
             self.transition = self.transition + 1/30
             UpdateShader()
         end, 10, function ()
-            self.index = v
+            self.index = i
             self.timer:every(1/30, function () -- Transition Out Of Blur
                 self.transition = self.transition - 1/30
                 UpdateShader()
@@ -48,23 +57,27 @@ local behaviors = {
         end)
     end,
 
-    ---@param v number Index of Scene to transition to.
-    transInstant = function (self, v)
-        self.index = v
+    ---Same as trans(), but without transition visuals.
+    ---@param i number Index of Scene to transition to.
+    transInstant = function (self, i)
+        self.index = i
     end,
 
-    ---@param t table Table of values
+    ---Set SceneGroup flags to match given table.
+    ---@param t table Table of values.
     setflags = function (self, t)
         for k, v in pairs(t) do
             self.flags[k] = v
         end
     end,
 
-    ---@param k string Key of flag to toggle
+    ---Toggles boolean flag.
+    ---@param k string Key of flag to toggle.
     toggleflag = function (self, k)
         self.flags[k] = not self.flags[k]
     end,
 
+    ---Open empty Box object.
     openbox = function (self)
         self.inputActive = false
 
@@ -73,7 +86,8 @@ local behaviors = {
         end
     end,
 
-    ---@param text string Text content
+    ---Open Box object with given text as content.
+    ---@param text string Text content.
     opentextbox = function (self, text)
         self.inputActive = false
 
@@ -82,6 +96,7 @@ local behaviors = {
         end
     end,
 
+    ---Open Box object with player inventory as content.
     openinvbox = function (self)
         self.inputActive = false
 
@@ -90,37 +105,44 @@ local behaviors = {
         end
     end,
 
-    ---@param v number Index of addon in current scene to hide.
-    hide = function (self, v)
-        self:CurrentScene().addons[v].active = false
+    ---Deactivates Addon in the current scene with the given index.
+    ---@param i number Index of addon in current scene to hide.
+    hide = function (self, i)
+        self:CurrentScene().addons[i].active = false
     end,
 
-    ---@param v number Index of addon in current scene to show.
-    show = function (self, v)
-        self:CurrentScene().addons[v].active = true
+    ---Activates Addon in the current scene with the given index.
+    ---@param i number Index of addon in current scene to show.
+    show = function (self, i)
+        self:CurrentScene().addons[i].active = true
     end,
 
-    ---@param v number Index of addon in current scene to toggle.
-    toggle = function (self, v)
-        self:CurrentScene().addons[v].active = not self:CurrentScene().addons[v].active
+    ---Toggles active state of Addon in the current scene with the given index.
+    ---@param i number Index of addon in current scene to toggle.
+    toggle = function (self, i)
+        self:CurrentScene().addons[i].active = not self:CurrentScene().addons[i].active
     end,
 
-    ---@param i number
+    ---Activates Clickable in current scene with the given index.
+    ---@param i number Index of Clickable in current scene to activate.
     enablecb = function (self, i)
         self:CurrentScene().clickables[i].active = true
     end,
 
-    ---@param i number
+    ---Deactivates Clickable in the current scene with the given index.
+    ---@param i number Index of Clickable in current scene to deactivate.
     disablecb = function (self, i)
         self:CurrentScene().clickables[i].active = true
     end,
 
+    ---Add an item to the inventory.
     ---@param item table Item to add to inventory.
     additem = function (self, item)
         table.insert(self.items, item)
     end,
 
-    ---@param id string ID of item to remove from inventory. Will remove all instances if there are multiple.
+    ---Remove an item from the inventory. Will remove all instances if there are multiple.
+    ---@param id string ID of item to remove from inventory. 
     remitem = function (self, id)
         for i = #self.items, 1, -1 do
             local item = self.items[i]
@@ -131,7 +153,7 @@ local behaviors = {
     end,
 
     ---Executes behaviors conditionally. _ at the start of a flagName indicates to execute only if the flag is false.
-    ---@param t table {flagName={behaviorToExecute}}
+    ---@param t { [string]: { [string]: any } } {flagName={behaviorToExecute}}
     switch = function (self, t)
         for key, value in pairs(t) do -- key is the name of the flag to check, value is the behavior to execute
             local inverse = false

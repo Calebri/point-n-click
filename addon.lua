@@ -8,7 +8,6 @@
 
 Addon = Object:extend()
 
----comment
 ---@param self table
 ---@param img Image
 ---@param activeCondition? table

@@ -150,18 +150,19 @@ function Box.draw(self)
     love.graphics.draw(self.canvas, self.x - self.vw / 2, self.y - self.vh / 2, 0, self.vw / self.w)
 end
 
----@param content? string|table
----@return table Box
+---Instantiate new Box.
+---@param content? string|table Box content. String content will open the Box as a text box. Table content will open the Box as an inventory preview.
+---@return table Box New Box instance.
 function Box.Open(content)
     local self
 
-    if type(content) == "string" then
+    if type(content) == "string" then -- Text Box
         self = Box({text=content})
-    elseif type(content) == "table" then
+    elseif type(content) == "table" then -- Inventory Preview
         if content[1]:is(Item) then
             self = Box({items=content})
         end
-    else
+    else -- Empty Box
         self = Box()
     end
 
