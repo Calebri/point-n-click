@@ -189,6 +189,26 @@ local behaviors = {
     end
 }
 
+-- If there is time, rewrite this to init behaviors as a function for readability; This array should be automatic.
+---@type string[]
+local execOrder = {
+    "openbox",
+    "opentextbox",
+    "openinvbox",
+    "trans",
+    "transInstant",
+    "setflags",
+    "toggleflag",
+    "hide",
+    "show",
+    "toggle",
+    "enablecb",
+    "disablecb",
+    "additem",
+    "remitem",
+    "switch"
+}
+
 ---@param self table
 ---@param scenes table[]
 ---@param index? number
@@ -331,14 +351,15 @@ function SceneGroup.ExecuteClickable(self, config)
     -- local config = cb.config
     
     self.timer:script(function (wait)
-    for key, behavior in pairs(behaviors) do
-        if config[key] ~= nil then
-            behavior(self, config[key])
-            while self.box do
-                wait(0.1)
+        for _, key in ipairs(execOrder) do
+            local behavior = behaviors[key]
+            if config[key] ~= nil then
+                behavior(self, config[key])
+                while self.box do
+                    wait(0.1)
+                end
             end
         end
-    end
     end)
 end
 
