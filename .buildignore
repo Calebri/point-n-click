@@ -1,0 +1,11 @@
+./.git/*
+./.vscode/*
+./bin/*
+
+./font/*
+
+build.sh
+.buildignore
+.gitignore
+README.md
+TODO.txt
