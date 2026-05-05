@@ -31,6 +31,34 @@ local behaviors = {
     -- self table: SceneGroup
     -- any: Single value passed from config.
 
+    ---Open empty Box object.
+    openbox = function (self)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open()
+        end
+    end,
+
+    ---Open Box object with given text as content.
+    ---@param text string Text content.
+    opentextbox = function (self, text)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open(text)
+        end
+    end,
+
+    ---Open Box object with player inventory as content.
+    openinvbox = function (self)
+        self.inputActive = false
+
+        if not self.box then
+            self.box = Box.Open(self.items) -- Update when box can handle items
+        end
+    end,
+
     ---Transition from the current scene to scene i.
     ---@param i number Index of Scene to transition to.
     trans = function (self, i)
@@ -86,34 +114,6 @@ local behaviors = {
     ---@param k string Key of flag to toggle.
     toggleflag = function (self, k)
         self.flags[k] = not self.flags[k]
-    end,
-
-    ---Open empty Box object.
-    openbox = function (self)
-        self.inputActive = false
-
-        if not self.box then
-            self.box = Box.Open()
-        end
-    end,
-
-    ---Open Box object with given text as content.
-    ---@param text string Text content.
-    opentextbox = function (self, text)
-        self.inputActive = false
-
-        if not self.box then
-            self.box = Box.Open(text)
-        end
-    end,
-
-    ---Open Box object with player inventory as content.
-    openinvbox = function (self)
-        self.inputActive = false
-
-        if not self.box then
-            self.box = Box.Open(self.items) -- Update when box can handle items
-        end
     end,
 
     ---Deactivates Addon in the current scene with the given index.
@@ -262,7 +262,7 @@ function SceneGroup.mousepressed(self)
             -- Open Inventory menu
             behaviors["openinvbox"](self)
         end
-    
+        
         for _, cb in ipairs(self.scenes[self.index].clickables) do
             if cb.active and self.PosInCb(x, y, cb) then
                 -- Clickable clicked
@@ -329,12 +329,17 @@ end
 ---@param config table
 function SceneGroup.ExecuteClickable(self, config)
     -- local config = cb.config
-
+    
+    self.timer:script(function (wait)
     for key, behavior in pairs(behaviors) do
         if config[key] ~= nil then
             behavior(self, config[key])
+            while self.box do
+                wait(0.1)
+            end
         end
     end
+    end)
 end
 
 ---Returns true if all the flags evaulate to be true
