@@ -1,4 +1,4 @@
-- Main menu
+- Main menu (title screen > fade to black > fade to game)
 - Fix shader handling to only use pixelBlur when neccesary (preferably handle this within the SceneGroup)
 - pixelBlur for opening/closing box
 - Clean up Class and Initialization documentation
