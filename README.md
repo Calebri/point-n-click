@@ -30,7 +30,7 @@ git clone https://github.com/Calebri/point-n-click.git
 
 ### Building for Windows
 
-If you are on Windows, you need to find a way to run Bash scripts in the terminal.
+If you are on Windows, you need to find a way to run Bash scripts in the terminal. This can be done with `wsl` or Cygwin. Take care to install necessary command-line modules, as these environments do not come with all of the necessary modules (`wget`, `zip`, `unzip`).
 
 2. Run the build script with `win64` as a parameter.
 ```sh

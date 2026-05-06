@@ -3,8 +3,8 @@
 #Run `bash build.sh win64` for Windows
 #Run `bash build.sh linux` for linux
 
-if [ $# -ge "1" ]; then
-    if [ $1 = "help" ]; then
+if [ "$#" -ge "1" ]; then
+    if [ "$1" = "help" ]; then
         echo "Builds source code to .love and platform binaries."
         echo "=========================================================="
         echo "build.sh                   Builds game.love file to ./bin."
@@ -29,16 +29,16 @@ ZIP_OUT="./bin/$NAME.love"
 LOVE_ZIP="$BUILD/love.zip"
 
 echo "Initializing directories..."
-mkdir -p $BUILD
-mkdir -p $BIN
+mkdir -p "$BUILD"
+mkdir -p "$BIN"
 
 echo "Creating $NAME.love..."
-rm -f $ZIP_OUT
-zip -9 -r $ZIP_OUT . -x@./.buildignore
+rm -f "$ZIP_OUT"
+zip -9 -r "$ZIP_OUT" . -x@./.buildignore
 echo "Created $NAME.love"
 
-if [ $# -ge "1" ]; then
-    if [ $1 = "win64" ]; then
+if [ "$#" -ge "1" ]; then
+    if [ "$1" = "win64" ]; then
         echo "Building Windows executable..."
 
         LOVE_URL_WIN64="https://github.com/love2d/love/releases/download/11.5/love-11.5-win64.zip"
@@ -52,15 +52,15 @@ if [ $# -ge "1" ]; then
                 echo "Using love.zip at $LOVE_ZIP"
             else
                 echo "Downloading love.zip..."
-                rm -f $LOVE_ZIP
+                rm -f "$LOVE_ZIP"
                 wget $LOVE_URL_WIN64 -O $LOVE_ZIP
             fi
 
             unzip -j -o $LOVE_ZIP "*love.exe" -d "$BUILD"
         fi
 
-        rm -f -r $BUILD_OUT
-        mkdir -p $BUILD_OUT
+        rm -f -r "$BUILD_OUT"
+        mkdir -p "$BUILD_OUT"
 
         echo "Creating $NAME.exe..."
         cat $LOVE_EXE $ZIP_OUT > $BUILD_OUT/$NAME.exe
@@ -77,7 +77,7 @@ if [ $# -ge "1" ]; then
         unzip -j -o $LOVE_ZIP "*msvcr120.dll" -d "$BUILD_OUT"
 
         echo "Built to $BUILD_OUT"
-    elif [ $1 = "linux" ]; then
+    elif [ "$1" = "linux" ]; then
         echo "Building Linux binary"
 
         LOVE_URL_LINUX="https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage"
@@ -95,7 +95,7 @@ if [ $# -ge "1" ]; then
 
         echo "Extracting AppImage..."
         rm -f -r "$SFS_ROOT"
-        cd $BUILD
+        cd "$BUILD"
         chmod +x love.AppImage
         love.AppImage --appimage-extract
         cd ..
