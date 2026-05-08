@@ -11,9 +11,10 @@ require("item")
 
 Box = Object:extend()
 
--- local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf", 12)
-local font = love.graphics.newFont(10, "mono")
+local font = love.graphics.newFont("font/VCR_OSD_MONO.ttf", 36)
+-- local font = love.graphics.newFont(10, "mono")
 font:setFilter("nearest", "nearest")
+local textScale = 1 --3
 
 local AnimState = {
     STOP = 0,
@@ -43,7 +44,7 @@ function Box.new(self, content)
         -- Text Attributes
         if content["text"] then
             self.text = content["text"]
-            self.tscale = 3
+            self.tscale = textScale
             self.tmargin = 5
         end
 
