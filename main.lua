@@ -83,6 +83,7 @@ local flags = {
 local sceneman = SceneGroup(scenes, 1, flags)
 
 local titleImage = Assets.GetImg("img/title_placeholder.png")
+local introText = "It looks like the lobby of a hotel. You can't quite remember how you got here."
 local gameStarted = false
 local c = 1
 
@@ -134,7 +135,7 @@ function love.mousepressed()
                 c = c + dt
                 UpdateShader()
             end, reps, function ()
-                sceneman:ExecuteClickable({opentextbox="Placeholder text box."})
+                sceneman:ExecuteClickable({opentextbox=introText})
             end)
         end)
     end
