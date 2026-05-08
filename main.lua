@@ -12,10 +12,10 @@ local debug = false
 
 local DEFAULT_SCALE = 1
 
-local testSwitch = {
-    testFlag = {opentextbox="testFlag = true"},
-    _testFlag = {setflags={testFlag=true}},
-}
+-- local testSwitch = {
+--     testFlag = {opentextbox="testFlag = true"},
+--     _testFlag = {setflags={testFlag=true}},
+-- }
 
 local scenes
 
