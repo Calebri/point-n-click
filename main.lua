@@ -1,3 +1,5 @@
+Timer = require "lib.timer"
+
 require "engine.window"
 require "engine.assets"
 
@@ -16,6 +18,8 @@ local DEFAULT_SCALE = 1
 --     testFlag = {opentextbox="testFlag = true"},
 --     _testFlag = {setflags={testFlag=true}},
 -- }
+
+local timer = Timer()
 
 local scenes
 
@@ -78,6 +82,10 @@ local flags = {
 
 local sceneman = SceneGroup(scenes, 1, flags)
 
+local titleImage = Assets.GetImg("img/title_placeholder.png")
+local gameStarted = false
+local c = 1
+
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -87,15 +95,47 @@ function love.load()
 end
 
 function love.update(dt)
-    sceneman:update(dt)
+    timer:update(dt)
+
+    if gameStarted then
+        sceneman:update(dt)
+    end
 end
 
 function love.draw()
     Window:draw()
 
-    sceneman:draw()
+    if gameStarted then
+        sceneman:draw()
+    else
+        love.graphics.draw(titleImage)
+    end
 end
 
 function love.mousepressed()
-    sceneman:mousepressed()
+    if gameStarted then
+        sceneman:mousepressed()
+    elseif c == 1 then -- Close the title screen
+        local function UpdateShader()
+            Shader.pixelBlur:send("transitionFactor", 1 - c)
+            love.graphics.setColor(c, c, c)
+        end
+
+        local dt = 1/30
+        local reps = 30
+
+        timer:every(dt, function ()
+            c = c - dt
+            UpdateShader()
+        end, reps, function ()
+            sceneman.InputActive = false
+            gameStarted = true
+            timer:every(dt, function ()
+                c = c + dt
+                UpdateShader()
+            end, reps, function ()
+                sceneman:ExecuteClickable({opentextbox="Placeholder text box."})
+            end)
+        end)
+    end
 end
