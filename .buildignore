@@ -1,8 +1,7 @@
 ./.git/*
 ./.vscode/*
 ./bin/*
-
-./font/*
+./build/*
 
 build.sh
 .buildignore
