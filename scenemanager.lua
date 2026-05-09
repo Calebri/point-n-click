@@ -25,6 +25,41 @@ require "shader"
 
 SceneGroup = Object:extend()
 
+---@param i number
+---@return table
+function SceneGroup.SetLoop(self, i)
+    -- print(i)
+    local totalLoops = 5
+    local prefix = "loop"
+
+    local out = {}
+
+    for loopNum = 1, totalLoops, 1 do
+        -- print(loopNum)
+        out[prefix .. loopNum] = (loopNum == i)
+        -- print(prefix .. loopNum .. " = " .. tostring(out[prefix .. loopNum]))
+    end
+    return out
+end
+
+function SceneGroup.GetLoop(self)
+    local flags = self.flags
+
+    local totalLoops = 5
+    local prefix = "loop"
+
+    local i = 0
+
+    for loopNum = 1, totalLoops, 1 do
+        if flags[prefix .. loopNum] then
+            i = loopNum
+            break
+        end
+    end
+
+    return i
+end
+
 ---Dictionary of behavior functions primarily for use by clickables.
 ---@type { [string]: function }
 local behaviors = {
@@ -189,6 +224,11 @@ local behaviors = {
     end
 }
 
+behaviors["incrementloop"] = function(self, _)
+    print("Incrementing loop")
+    behaviors.setflags(self, self:SetLoop(self:GetLoop() + 1))
+end
+
 -- If there is time, rewrite this to init behaviors as a function for readability; This array should be automatic.
 ---@type string[]
 local execOrder = {
@@ -199,6 +239,7 @@ local execOrder = {
     "transInstant",
     "setflags",
     "toggleflag",
+    "incrementloop",
     "hide",
     "show",
     "toggle",

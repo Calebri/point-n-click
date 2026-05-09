@@ -49,7 +49,7 @@ else -- \/ MAIN SCENES LIST \/
                          Cb(160,  44, 489, 250, {opentextbox="There's nobody there."}), -- Area Behind
                          Cb( 75, 239, 160, 331, {opentextbox="It's a small lamp."}), -- Lamp 1
                          Cb(489, 239, 573, 331, {opentextbox="It's a small lamp."}), -- Lamp 2
-                         Cb(343, 309, 392, 330, {setflags={keyCollected=true}, opentextbox="You picked up the key."}, {flags={"_keyCollected"}}), -- Key
+                         Cb(343, 309, 392, 330, {setflags={keyCollected=true}, additem=Item("key", Assets.GetImg("img/item/key.png")), opentextbox="You picked up the key."}, {flags={"_keyCollected"}}), -- Key
                         },
                         {Addon(Assets.GetImg("img/scenes/checkin_key.png"), {flags={"_keyCollected"}})}) -- Key
     
@@ -67,7 +67,7 @@ else -- \/ MAIN SCENES LIST \/
     
     scenes[4] = Scene(Assets.GetImg("img/scenes/room.png"), -- Hotel Room
                         {Cb(  6, 410, 117, 473, {opentextbox="NOTE TEXT HERE"}), -- Note
-                         Cb(122, 330, 443, 401, {opentextbox="You feel tired, but the developer hasn't yet added the ability for you to go to sleep."}), -- Bed
+                         Cb(122, 330, 443, 401, {opentextbox="You feel tired and decide to go to sleep.",  incrementloop=true, trans=1}), -- Bed
                          Cb(101, 137, 231, 234, {opentextbox="A jovial painting. For some reason it makes you feel nauseous."}), -- Painting
                          Cb(250,  80, 427, 333, {opentextbox="A large wardrobe."}), -- Wardrobe
                          Cb(462,  77, 612, 277, {opentextbox="It looks like a window, but theres nothing on the other side."}), -- Window
@@ -77,7 +77,12 @@ else -- \/ MAIN SCENES LIST \/
 end
 
 local flags = {
-    keyCollected = false
+    keyCollected = false,
+    loop1 = true,
+    loop2 = false,
+    loop3 = false,
+    loop4 = false,
+    loop5 = false
 }
 
 local sceneman = SceneGroup(scenes, 1, flags)
@@ -101,6 +106,8 @@ function love.update(dt)
     if gameStarted then
         sceneman:update(dt)
     end
+
+    -- print(sceneman:GetLoop())
 end
 
 function love.draw()
