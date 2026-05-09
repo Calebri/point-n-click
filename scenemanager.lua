@@ -225,10 +225,10 @@ function SceneGroup.new(self, scenes, index, initialFlags)
     self.invCb = Cb(10, 184, 44, 222)
     self.invImg = Assets.GetImg("img/bag/bag1.png")
     self.items = {
-        Item("One", Assets.GetImg("img/item/testitem1.png")),
-        Item("Two", Assets.GetImg("img/item/testitem2.png")),
-        Item("Three", Assets.GetImg("img/item/testitem3.png")),
-        Item("FOur", Assets.GetImg("img/item/testitem4.png"))
+        -- Item("One", Assets.GetImg("img/item/testitem1.png")),
+        -- Item("Two", Assets.GetImg("img/item/testitem2.png")),
+        -- Item("Three", Assets.GetImg("img/item/testitem3.png")),
+        -- Item("FOur", Assets.GetImg("img/item/testitem4.png"))
     }
 
     self.timer = Timer()

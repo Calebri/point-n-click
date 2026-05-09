@@ -160,9 +160,7 @@ function Box.Open(content)
     if type(content) == "string" then -- Text Box
         self = Box({text=content})
     elseif type(content) == "table" then -- Inventory Preview
-        if content[1]:is(Item) then
-            self = Box({items=content})
-        end
+        self = Box({items=content})
     else -- Empty Box
         self = Box()
     end
