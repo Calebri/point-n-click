@@ -221,6 +221,12 @@ local behaviors = {
                 self:ExecuteClickable(value)
             end
         end
+    end,
+
+    ---Execute behavior after all other behavior 
+    ---@param conf { [string]: any}
+    late = function (self, conf)
+        self:ExecuteClickable(conf)
     end
 }
 
@@ -247,7 +253,8 @@ local execOrder = {
     "disablecb",
     "additem",
     "remitem",
-    "switch"
+    "switch",
+    "late"
 }
 
 ---@param self table
