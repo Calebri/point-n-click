@@ -96,8 +96,9 @@ if [ "$#" -ge "1" ]; then
         echo "Extracting AppImage..."
         rm -f -r "$SFS_ROOT"
         cd "$BUILD"
+        ls
         chmod +x love.AppImage
-        love.AppImage --appimage-extract
+        ./love.AppImage --appimage-extract
         cd ..
 
         cat "$SFS_ROOT/bin/love" $ZIP_OUT > "$SFS_ROOT/bin/$NAME"
