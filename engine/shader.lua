@@ -7,12 +7,12 @@ Shader.pixelBlur = love.graphics.newShader([[
     {
         // Based on https://www.shadertoy.com/view/MtdXDM
 
-        number minPixelSize = 1;
-        number maxPixelSize = 30;
+        number minPixelSize = 1.0;
+        number maxPixelSize = 30.0;
 
         number pixelSize = mix(minPixelSize, maxPixelSize, transitionFactor);
 
-        vec2 resolution = vec2(650, 490);
+        vec2 resolution = vec2(650.0, 490.0);
         vec2 center = vec2(0.5);
     
         vec2 finalUV = texture_coords;
