@@ -1,14 +1,14 @@
 Timer = require "lib.timer"
 
-require "engine.window"
-require "engine.assets"
+require "utils.window"
+require "utils.assets"
 
-require "scenemanager"
-require "scene"
-Cb = require "clickable"
-require "addon"
-require "box"
-require "shader"
+require "engine.scenemanager"
+require "engine.scene"
+Cb = require "engine.clickable"
+require "engine.addon"
+require "engine.box"
+require "engine.shader"
 
 local debug = false
 

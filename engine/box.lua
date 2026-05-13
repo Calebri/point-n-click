@@ -2,12 +2,12 @@
     Class: Box
 ]]
 
-require "engine.window"
+require "utils.window"
 Timer = require "lib.timer"
 
-require("engine.stringops")
+require("utils.stringops")
 
-require("item")
+require("engine.item")
 
 Box = Object:extend()
 

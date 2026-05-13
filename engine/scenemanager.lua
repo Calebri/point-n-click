@@ -16,12 +16,12 @@
 Object = require "lib.classic"
 Timer = require "lib.timer"
 
-require "engine.input"
-require "engine.assets"
+require "utils.input"
+require "utils.assets"
 
-require "box"
-require "item"
-require "shader"
+require "engine.box"
+require "engine.item"
+require "engine.shader"
 
 SceneGroup = Object:extend()
 
