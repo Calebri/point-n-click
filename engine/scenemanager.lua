@@ -322,7 +322,7 @@ function SceneGroup.mousepressed(self)
             self.box = nil
             self.inputActive = true
         end)
-        goto continue
+        return
     end
 
     if self.inputActive then -- Execute clicked clickable(s)
@@ -335,12 +335,10 @@ function SceneGroup.mousepressed(self)
             if cb.active and self.PosInCb(x, y, cb) then
                 -- Clickable clicked
                 self:ExecuteClickable(cb.config)
-                goto continue
+                return
             end
         end
     end
-
-    ::continue::
 end
 
 ---Updates the cursor state depending on if it is hovering on a clickable.
@@ -352,18 +350,17 @@ function SceneGroup.UpdateMouse(self)
     if self.inputActive then
         if self.invCb.active and self.PosInCb(x, y, self.invCb) then
             hovering = true
-            goto done
         end
 
-        for _, cb in ipairs(self.scenes[self.index].clickables) do
-            if cb.active and self.PosInCb(x, y, cb) then
-                hovering = true
-                goto done
+        if not hovering then
+            for _, cb in ipairs(self.scenes[self.index].clickables) do
+                if cb.active and self.PosInCb(x, y, cb) then
+                    hovering = true
+                    break
+                end
             end
         end
     end
-
-    ::done::
 
     if hovering then
         love.mouse.setCursor(love.mouse.getSystemCursor("hand"))

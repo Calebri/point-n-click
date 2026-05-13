@@ -73,26 +73,28 @@ function Box.new(self, content)
         local tspace = (self.w - 2 * self.tmargin) -- Width that is occupied by text
 
         for _, word in ipairs(words) do -- Seperate words into lines
+            local tooLarge = false
+        
             if font:getWidth(word) * self.tscale > tspace then
                 print("Word is too large: " .. word)
-                goto continue -- Skip words that are too large
+                tooLarge = true -- Skip words that are too large
             end
 
-            local temp
-            if lines[currentLine] then
-                temp = lines[currentLine] .. " " .. word
-            else
-                temp = word
-            end
+            if not tooLarge then
+                local temp
+                if lines[currentLine] then
+                    temp = lines[currentLine] .. " " .. word
+                else
+                    temp = word
+                end
 
-            if font:getWidth(temp) * self.tscale <= tspace then
-                lines[currentLine] = temp
-            else -- width > tspace
-                currentLine = currentLine + 1
-                lines[currentLine] = word
+                if font:getWidth(temp) * self.tscale <= tspace then
+                    lines[currentLine] = temp
+                else -- width > tspace
+                    currentLine = currentLine + 1
+                    lines[currentLine] = word
+                end
             end
-
-            ::continue::
         end
 
         self.text = table.concat(lines, "\n")
