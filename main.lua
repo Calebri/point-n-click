@@ -63,7 +63,9 @@ else -- \/ MAIN SCENES LIST \/
                          Cb(489, 239, 573, 331, {opentextbox="It's a small lamp."}), -- Lamp 2
                          Cb(343, 309, 392, 330, {setflags={keyCollected=true}, additem=Item("key", Assets.GetImg("img/item/key.png")), opentextbox="You picked up the key."}, {flags={"_keyCollected"}}), -- Key
                         },
-                        {Addon(Assets.GetImg("img/scenes/checkin_key.png"), {flags={"_keyCollected"}}), -- Key
+                        {Addon(Assets.GetImg("img/scenes/checkin_1.png"), {flags={"_loop1", "_loop4", "_loop5"}}),
+                         Addon(Assets.GetImg("img/scenes/checkin_2.png"), {flags={"_loop1", "_loop2", "_loop3"}}),
+                         Addon(Assets.GetImg("img/scenes/checkin_key.png"), {flags={"_keyCollected"}}), -- Key
                          Addon(Assets.GetImg("img/scenes/checkin_man.png"), {flags={"_loop5"}})
                         })
     
@@ -84,13 +86,14 @@ else -- \/ MAIN SCENES LIST \/
                         })
     
     scenes[4] = Scene(Assets.GetImg("img/scenes/room.png"), -- Hotel Room
-                        {Cb(  6, 410, 117, 473, {opentextbox="NOTE TEXT HERE"}), -- Note
+                        {Cb(  6, 410, 117, 473, {opentextbox="Please be conscious of your neighbors."}), -- Note
                          Cb(122, 330, 443, 401, {opentextbox="You feel tired and decide to go to sleep.", setflags={keyCollected=false}, remitem="key", incrementloop=true, trans=1}), -- Bed
-                         Cb(101, 137, 231, 234, {opentextbox="A jovial painting. For some reason it makes you feel nauseous."}), -- Painting
+                         Cb(101, 137, 231, 234, {opentextbox="A blank painting."}), -- Painting
                          Cb(250,  80, 427, 333, {opentextbox="A large wardrobe."}), -- Wardrobe
                          Cb(462,  77, 612, 277, {opentextbox="It looks like a window, but theres nothing on the other side."}), -- Window
                          Cb(401, 408, 542, 489, {opentextbox="A small suitcase. It's locked."}), -- Suitcase
-                        })
+                        },
+                        {Addon(Assets.GetImg("img/scenes/room_1.png"), {flags={"_loop1", "_loop2"}})})
 
     scenes[5] = Scene(Assets.GetImg("img/end_of_demo.png"))
 
@@ -107,7 +110,7 @@ local flags = {
 
 local sceneman = SceneGroup(scenes, 1, flags)
 
-local titleImage = Assets.GetImg("img/title_placeholder_2.png")
+local titleImage = Assets.GetImg("img/title.png")
 local introText = "It looks like the lobby of a hotel. You can't quite remember how you got here."
 local gameStarted = false
 local c = 1
